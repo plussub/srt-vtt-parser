@@ -22,7 +22,9 @@
     "xstate": "^4.11.0"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.7",
     "jest": "^26.1.0",
+    "ts-jest": "^26.1.4",
     "typescript": "^3.9.7"
   }
 }
