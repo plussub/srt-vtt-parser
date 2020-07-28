@@ -1,86 +1,75 @@
 import { ParsedResult, Entry } from './types';
+import { createMachine, interpret } from 'xstate';
 
-interface Timeline {
-  from: number;
-  to: number;
-}
+const machine = {
+  result: [] as any[],
+  current: {} as any,
+  transistions: {
+    start(tokens: string[], pos: number) {
+      machine.transistions.id(tokens, pos);
+    },
+    // @ts-ignore
+    id(tokens: string[], pos: number) {
+      if (tokens.length === pos) {
+        return machine.transistions.finish();
+      }
+      if (isBlank(tokens[pos])) {
+        return machine.transistions.id(tokens, ++pos);
+      }
+
+      const idDoesNotExists = tokens[pos].includes('-->');
+      machine.current.id = idDoesNotExists ? '' : tokens[pos];
+      return machine.transistions.timeLine(tokens, idDoesNotExists ? pos : ++pos);
+    },
+    // @ts-ignore
+    timeLine(tokens: string[], pos: number) {
+      const timeLine = tokens[pos];
+      const [from, to] = timeLine.split('-->');
+      machine.current.from = timestampToMillisecond(from);
+      machine.current.to = timestampToMillisecond(to);
+      return machine.transistions.text(tokens, ++pos);
+    },
+    // @ts-ignore
+    text(tokens: string[], pos: number) {
+      if (tokens.length === pos) {
+        return machine.transistions.finish();
+      }
+      if (isBlank(tokens[pos])) {
+        return machine.transistions.finEntry(tokens, pos);
+      }
+      machine.current.text = tokens[pos];
+      return machine.transistions.multiLineText(tokens, ++pos);
+    },
+    // @ts-ignore
+    multiLineText(tokens: string[], pos: number) {
+      if (tokens.length === pos) {
+        return machine.transistions.finish();
+      }
+      if (isBlank(tokens[pos])) {
+        return machine.transistions.finEntry(tokens, pos);
+      }
+      machine.current.text = `${machine.current.text}\n${tokens[pos]}`;
+      return machine.transistions.multiLineText(tokens, ++pos);
+    },
+    // @ts-ignore
+    finEntry(tokens: string[], pos: number) {
+      machine.result.push({ ...machine.current });
+      machine.current = {};
+      return machine.transistions.id(tokens, ++pos);
+    },
+    finish() {}
+  }
+};
+const isBlank = (str: string) => !str || /^\s*$/.test(str);
+
+const timestampToMillisecond = (value: string) => {
+  const [hours, minutes, seconds] = value.split(':');
+  return parseInt(seconds.replace(',', ''), 10) + parseInt(minutes, 10) * 60 * 1000 + parseInt(hours, 10) * 60 * 60 * 1000;
+};
 
 export const srtParser = (raw: string): ParsedResult => {
-  // log('start parsing');
-
-  const srtRawLine = raw.split(/\n/);
-  let isNewEntry = true;
-  let isTimeLine = true;
-  let currentId = -1;
-  let currentTimeLine: Timeline | null = null;
-  let currentText = '';
-  // @ts-ignore
-  const entries: Entry[] = [];
-  srtRawLine.forEach((value) => {
-    // log('current element:' + value);
-
-    if (isNewEntry) {
-      currentId = parseInt(value, 10);
-      if (isNaN(currentId)) {
-        // log('Line is NaN, skip line');
-        return;
-      }
-      // log(`id:  ${currentId}`);
-
-      isNewEntry = false;
-    } else {
-      if (isTimeLine) {
-        // log(`timeline: ${value}`);
-        currentTimeLine = extractTimeLine(value);
-        // log(`parsed timeline: ${currentTimeLine}`);
-        isTimeLine = false;
-        return;
-      }
-
-      if (!isBlank(value)) {
-        // log(`subtitle line: ${value}`);
-        currentText = `${currentText}${currentText ? '\n' : ''}${value}`;
-        // log(`concat subtitle line: ${currentText}`);
-        return;
-      }
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      entries.push(createSubtitleEntry(currentId, currentTimeLine.from, currentTimeLine.to, currentText));
-
-      isNewEntry = true;
-      isTimeLine = true;
-      currentText = '';
-    }
-  });
-  // log(`parsing done. entry size: ${result.length}`);
-  // @ts-ignore
+  machine.transistions.start(raw.split(/\n/), 0);
   return {
-    entries
+    entries: machine.result
   };
 };
-
-const isBlank = (str: string) => !str || /^\s*$/.test(str);
-const createSubtitleEntry = (id: number, from: number, to: number, text: string) => ({
-  id,
-  from,
-  to,
-  text
-});
-
-//maybe exclude from this function for easy replace of parser strategy
-const extractTimeLine = (value: string): Timeline => {
-  const [leftSide, rightSide] = value.split('-->');
-
-  return {
-    from: timestampToMillisecond(leftSide),
-    to: timestampToMillisecond(rightSide)
-  };
-};
-
-function timestampToMillisecond(value: string) {
-  const [hours, minutes, seconds] = value.split(':');
-  let milliseconds = parseInt(seconds.replace(',', ''), 10);
-  milliseconds += parseInt(minutes, 10) * 60 * 1000;
-  milliseconds += parseInt(hours, 10) * 60 * 60 * 1000;
-  return milliseconds;
-}
