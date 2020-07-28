@@ -1,0 +1,28 @@
+{
+  "name": "srt-vtt-parser",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "ts-check": "tsc --noEmit --skipLibCheck",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plussub/srt-vtt-parser.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/plussub/srt-vtt-parser/issues"
+  },
+  "homepage": "https://github.com/plussub/srt-vtt-parser#readme",
+  "dependencies": {
+    "xstate": "^4.11.0"
+  },
+  "devDependencies": {
+    "jest": "^26.1.0",
+    "typescript": "^3.9.7"
+  }
+}
