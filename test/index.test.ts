@@ -9,28 +9,35 @@ import vttWithNote from './vttWithNote';
 import vttWithMultilineNode from './vttWithMultilineNote';
 import vttWithStyle from './vttWithStyle';
 import vttWithInlineStyle from './vttWithInlineStyle';
-import drivesrt from './drivesrt';
+import driveSrt from './driveSrt';
+import pulpfictionVtt from './pulpfictionVtt';
 import result from './result.json';
+import resultWithoutId from './resultWithoutId.json';
+import resultWithMixedId from './resultWithMixedId.json';
 
 describe('srt-vtt-parser', () => {
   it.each`
-    raw                       | note
-    ${srt}                    | ${'should parse simple srt file'}
-    ${srtMultiWhitespaces}    | ${'should parse srt file with multiple whitespaces'}
-    ${vtt}                    | ${'should parse simple vtt file'}
-    ${vttMultiWhitespaces}    | ${'should parse vtt file with multiple whitespaces'}
-    ${vttWithoutIdentifier}   | ${'should parse vtt file without identifier'}
-    ${vttWithMixedIdentifier} | ${'should parse vtt file with mixed identifier'}
-    ${vttWithNote}            | ${'should vtt file with note'}
-    ${vttWithMultilineNode}   | ${'should vtt file with multiline note'}
-    ${vttWithStyle}           | ${'should parse vtt file with style blocks'}
-    ${vttWithInlineStyle}     | ${'should parse vtt file with inline style'}
-  `('$note', async ({ raw }) => {
+    raw                       | expected             | note
+    ${srt}                    | ${result}            | ${'should parse simple srt file'}
+    ${srtMultiWhitespaces}    | ${result}            | ${'should parse srt file with multiple whitespaces'}
+    ${vtt}                    | ${result}            | ${'should parse simple vtt file'}
+    ${vttMultiWhitespaces}    | ${result}            | ${'should parse vtt file with multiple whitespaces'}
+    ${vttWithoutIdentifier}   | ${resultWithoutId}   | ${'should parse vtt file without identifier'}
+    ${vttWithMixedIdentifier} | ${resultWithMixedId} | ${'should parse vtt file with mixed identifier'}
+    ${vttWithNote}            | ${result}            | ${'should vtt file with note'}
+    ${vttWithMultilineNode}   | ${result}            | ${'should vtt file with multiline note'}
+    ${vttWithStyle}           | ${result}            | ${'should parse vtt file with style blocks'}
+    ${vttWithInlineStyle}     | ${result}            | ${'should parse vtt file with inline style'}
+  `('$note', async ({ raw, expected }) => {
     const parsedResult = parse(raw);
-    expect(parsedResult).toEqual(result);
+    expect(parsedResult).toEqual(expected);
   });
 
   it('parse whole srt file', () => {
-    console.warn(parse(drivesrt));
+    console.warn(parse(driveSrt));
+  });
+
+  it('parse whole vtt file', () => {
+    console.warn(parse(pulpfictionVtt));
   });
 });
