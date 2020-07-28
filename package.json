@@ -2,11 +2,12 @@
   "name": "@plussub/srt-vtt-parser",
   "version": "0.1.1",
   "description": "",
-  "main": "srt-vtt-parser.min.js",
-  "types": "srt-vtt-parser.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "clear": "rimraf dist/*",
-    "build": "npm run clean && npx rollup -c",
+    "build": "tsc",
     "ts-check": "tsc --noEmit --skipLibCheck",
     "test": "jest"
   },
@@ -27,11 +28,9 @@
     "plussub:registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
-    "@rollup/plugin-typescript": "^5.0.2",
     "@types/jest": "^26.0.7",
     "jest": "^26.1.0",
     "rimraf": "^3.0.2",
-    "rollup": "^2.23.0",
     "ts-jest": "^26.1.4",
     "tslib": "^2.0.0",
     "typescript": "^3.9.7"
