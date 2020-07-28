@@ -3,7 +3,7 @@ interface Timeline {
   to: number;
 }
 
-export const parse = (rawSrt: String): any[] => {
+export const parse = (rawSrt: string): any[] => {
   // log('start parsing');
 
   const srtRawLine = rawSrt.split(/\n/);
