@@ -1,5 +1,5 @@
 {
-  "name": "srt-vtt-parser",
+  "name": "@plussub/srt-vtt-parser",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
@@ -20,6 +20,9 @@
   "homepage": "https://github.com/plussub/srt-vtt-parser#readme",
   "dependencies": {
     "xstate": "^4.11.0"
+  },
+  "publishConfig": {
+    "plussub:registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
     "@types/jest": "^26.0.7",
