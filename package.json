@@ -6,11 +6,11 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "clear": "rimraf dist/*",
+    "clean": "rimraf dist/*",
     "build": "tsc",
     "ts-check": "tsc --noEmit --skipLibCheck",
     "test": "jest",
-    "shortcut": "npm run build && npm version patch && git push && git push --tags && npm pack && npm publish --access public"
+    "shortcut": "npm run clean && npm run build && npm version patch && git push && git push --tags && npm pack && npm publish --access public"
   },
   "repository": {
     "type": "git",
