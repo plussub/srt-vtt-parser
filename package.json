@@ -4,7 +4,9 @@
   "description": "A dependency free SRT / Vtt subtitle parser, written in Typescript.\n",
   "keywords": [
     "vtt",
-    "srt"
+    "srt",
+    "webvtt",
+    "subtitle"
   ],
   "main": "dist/src/index.js",
   "module": "dist/src/index.js",
