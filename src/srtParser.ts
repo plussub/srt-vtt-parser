@@ -1,16 +1,10 @@
-import { ParsedResult, Entry } from './types';
-import mitt, { Emitter } from 'mitt';
-import { EventType } from 'mitt/src/index';
+import { Entry, ParsedResult } from './types';
 
 interface TransitionParams {
   tokens: string[];
   pos: number;
   result: Entry[];
   current: Partial<Entry>;
-  context: {
-    emitter: Emitter;
-    emit: <TransitionParams>(type: EventType, event: TransitionParams) => void;
-  };
 }
 
 const TRANSITION_NAMES = {
@@ -22,15 +16,6 @@ const TRANSITION_NAMES = {
   FINISH: 'finish'
 };
 
-const throwIfUndef = <T = any>(fn: (event: T) => void) => {
-  return (params: T | undefined) => {
-    if (!params) {
-      throw new Error('transition has undefined params undefinded');
-    }
-    return fn(params);
-  };
-};
-
 const isBlank = (str: string) => !str || /^\s*$/.test(str);
 
 const timestampToMillisecond = (value: string) => {
@@ -39,153 +24,91 @@ const timestampToMillisecond = (value: string) => {
 };
 
 class SrtMachine {
-  private emitter: Emitter;
-  private currentHandlers: {
-    fn: (event: TransitionParams | undefined) => void;
-    transitionName: string;
-  }[] = [];
-
-  constructor() {
-    this.emitter = mitt();
-  }
-
-  start(raw: string): Promise<Entry[]> {
-    this.currentHandlers = Object.values(TRANSITION_NAMES).map((transitionName) => ({
-      // @ts-ignore
-      fn: (event: TransitionParams | undefined) => setImmediate(() => this[transitionName].bind(this)(event)),
-      transitionName
-    }));
-
-    this.currentHandlers.forEach(({ transitionName, fn }) => {
-      this.emitter.on<TransitionParams>(transitionName, fn);
-    });
-
-    const promise = new Promise<Entry[]>((resolve) => {
-      const handler = throwIfUndef(({ result, context: { emitter } }: TransitionParams): void => {
-        emitter.off(TRANSITION_NAMES.FINISH, handler);
-        this.shutdown();
-        resolve(result);
-      });
-      this.emitter.on(TRANSITION_NAMES.FINISH, handler);
-    });
-
-    this.emitter.emit<TransitionParams>(TRANSITION_NAMES.ID, {
+  start(raw: string): Entry[] {
+    let currentTransition = TRANSITION_NAMES.ID;
+    let params = {
       tokens: raw.split(/\n/),
       pos: 0,
       result: [],
-      current: {},
-      context: {
-        emit: this.emitter.emit,
-        emitter: this.emitter
-      }
-    });
+      current: {}
+    };
+    while (currentTransition !== TRANSITION_NAMES.FINISH) {
+      // @ts-expect-error
+      const result = this[currentTransition](params);
+      params = result.params;
+      currentTransition = result.next;
+    }
 
-    return promise;
-  }
-
-  shutdown() {
-    this.currentHandlers.forEach(({ transitionName, fn }) => {
-      this.emitter.off(transitionName, fn);
-    });
-    this.currentHandlers = [];
+    return params.result;
   }
 
   [TRANSITION_NAMES.ID](params: TransitionParams) {
-    const {
-      tokens,
-      pos,
-      current,
-      context: { emit }
-    } = params;
+    const { tokens, pos, current } = params;
     if (tokens.length <= pos) {
-      emit(TRANSITION_NAMES.FINISH, params);
-      return;
+      return { next: TRANSITION_NAMES.FINISH, params };
     }
     if (isBlank(tokens[pos])) {
-      emit(TRANSITION_NAMES.ID, { ...params, pos: pos + 1 });
-      return;
+      return { next: TRANSITION_NAMES.ID, params: { ...params, pos: pos + 1 } };
     }
 
     const idDoesNotExists = tokens[pos].includes('-->');
     current.id = idDoesNotExists ? '' : tokens[pos];
-    emit(TRANSITION_NAMES.TIME_LINE, {
-      ...params,
-      current,
-      tokens,
-      pos: idDoesNotExists ? pos : pos + 1
-    });
+    return {
+      next: TRANSITION_NAMES.TIME_LINE,
+      params: {
+        ...params,
+        current,
+        tokens,
+        pos: idDoesNotExists ? pos : pos + 1
+      }
+    };
   }
 
   [TRANSITION_NAMES.TIME_LINE](params: TransitionParams) {
-    const {
-      tokens,
-      pos,
-      current,
-      context: { emit }
-    } = params;
+    const { tokens, pos, current } = params;
     const timeLine = tokens[pos];
     const [from, to] = timeLine.split('-->');
     current.from = timestampToMillisecond(from);
     current.to = timestampToMillisecond(to);
-    emit(TRANSITION_NAMES.TEXT, { ...params, current, pos: pos + 1 });
+    return { next: TRANSITION_NAMES.TEXT, params: { ...params, current, pos: pos + 1 } };
   }
 
   [TRANSITION_NAMES.TEXT](params: TransitionParams) {
-    const {
-      tokens,
-      pos,
-      current,
-      context: { emit }
-    } = params;
+    const { tokens, pos, current } = params;
     if (tokens.length <= pos) {
-      emit(TRANSITION_NAMES.FINISH, params);
-      return;
+      return { next: TRANSITION_NAMES.FINISH, params };
     }
     if (isBlank(tokens[pos])) {
-      emit(TRANSITION_NAMES.FIN_ENTRY, params);
-      return;
+      return { next: TRANSITION_NAMES.FIN_ENTRY, params };
     }
     current.text = tokens[pos];
-    emit(TRANSITION_NAMES.MULTI_LINE_TEXT, { ...params, current, pos: pos + 1 });
+    return { next: TRANSITION_NAMES.MULTI_LINE_TEXT, params: { ...params, current, pos: pos + 1 } };
   }
 
   [TRANSITION_NAMES.MULTI_LINE_TEXT](params: TransitionParams) {
-    const {
-      tokens,
-      pos,
-      current,
-      context: { emit }
-    } = params;
+    const { tokens, pos, current } = params;
     if (tokens.length <= pos) {
-      emit(TRANSITION_NAMES.FINISH, params);
-      return;
+      return { next: TRANSITION_NAMES.FINISH, params };
     }
     if (isBlank(tokens[pos])) {
-      emit(TRANSITION_NAMES.FIN_ENTRY, params);
-      return;
+      return { next: TRANSITION_NAMES.FIN_ENTRY, params };
     }
     current.text = `${current.text}\n${tokens[pos]}`;
-    emit(TRANSITION_NAMES.MULTI_LINE_TEXT, { ...params, current, pos: pos + 1 });
+    return { next: TRANSITION_NAMES.MULTI_LINE_TEXT, params: { ...params, current, pos: pos + 1 } };
   }
 
   [TRANSITION_NAMES.FIN_ENTRY](params: TransitionParams) {
-    const {
-      pos,
-      current,
-      result,
-      context: { emit }
-    } = params;
-    // @ts-ignore
+    const { pos, current, result } = params;
+    // @ts-expect-error
     result.push(current);
-    // console.log(this.current);
-    emit(TRANSITION_NAMES.ID, { ...params, current: {}, pos: pos + 1 });
+    return { next: TRANSITION_NAMES.ID, params: { ...params, current: {}, pos: pos + 1 } };
   }
 
   [TRANSITION_NAMES.FINISH](_: TransitionParams) {}
 }
 
-export const srtParser = async (raw: string): Promise<ParsedResult> => {
+export const srtParser = (raw: string): ParsedResult => {
   return {
-    entries: await new SrtMachine().start(raw)
+    entries: new SrtMachine().start(raw)
   };
 };

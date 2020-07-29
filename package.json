@@ -22,9 +22,7 @@
     "url": "https://github.com/plussub/srt-vtt-parser/issues"
   },
   "homepage": "https://github.com/plussub/srt-vtt-parser#readme",
-  "dependencies": {
-    "mitt": "^2.1.0"
-  },
+  "dependencies": {},
   "publishConfig": {
     "plussub:registry": "https://registry.npmjs.org"
   },

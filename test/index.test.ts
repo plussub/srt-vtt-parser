@@ -28,8 +28,8 @@ describe('srt-vtt-parser', () => {
     ${vttWithMultilineNode}   | ${result}            | ${'should vtt file with multiline note'}
     ${vttWithStyle}           | ${result}            | ${'should parse vtt file with style blocks'}
     ${vttWithInlineStyle}     | ${result}            | ${'should parse vtt file with inline style'}
-  `('$note', async ({ raw, expected }) => {
-    const parsedResult = await parse(raw);
+  `('$note', ({ raw, expected }) => {
+    const parsedResult = parse(raw);
     expect(parsedResult).toEqual(expected);
   });
 
