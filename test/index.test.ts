@@ -29,7 +29,7 @@ describe('srt-vtt-parser', () => {
     ${vttWithStyle}           | ${result}            | ${'should parse vtt file with style blocks'}
     ${vttWithInlineStyle}     | ${result}            | ${'should parse vtt file with inline style'}
   `('$note', async ({ raw, expected }) => {
-    const parsedResult = parse(raw);
+    const parsedResult = await parse(raw);
     expect(parsedResult).toEqual(expected);
   });
 
@@ -37,7 +37,7 @@ describe('srt-vtt-parser', () => {
     console.warn(parse(driveSrt));
   });
 
-  it('parse whole vtt file', () => {
-    console.warn(parse(pulpfictionVtt));
+  it('parse whole vtt file', async () => {
+    console.warn(await parse(pulpfictionVtt));
   });
 });

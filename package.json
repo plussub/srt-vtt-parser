@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/plussub/srt-vtt-parser#readme",
   "dependencies": {
+    "mitt": "^2.1.0",
     "xstate": "^4.11.0"
   },
   "publishConfig": {
