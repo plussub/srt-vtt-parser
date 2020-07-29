@@ -1,6 +1,6 @@
 {
   "name": "@plussub/srt-vtt-parser",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A dependency free SRT / Vtt subtitle parser, written in Typescript.\n",
   "keywords": [
     "vtt",
