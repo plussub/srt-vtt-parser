@@ -9,7 +9,8 @@
     "clear": "rimraf dist/*",
     "build": "tsc",
     "ts-check": "tsc --noEmit --skipLibCheck",
-    "test": "jest"
+    "test": "jest",
+    "shortcut": "npm run build && npm version patch && git push && git push --tags && npm pack && npm publish --access public"
   },
   "repository": {
     "type": "git",
@@ -22,8 +23,7 @@
   },
   "homepage": "https://github.com/plussub/srt-vtt-parser#readme",
   "dependencies": {
-    "mitt": "^2.1.0",
-    "xstate": "^4.11.0"
+    "mitt": "^2.1.0"
   },
   "publishConfig": {
     "plussub:registry": "https://registry.npmjs.org"
