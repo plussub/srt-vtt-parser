@@ -6,7 +6,9 @@
     "vtt",
     "srt",
     "webvtt",
-    "subtitle"
+    "subtitle",
+    "captions",
+    "parser"
   ],
   "main": "dist/src/index.js",
   "module": "dist/src/index.js",
