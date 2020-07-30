@@ -5,6 +5,7 @@ import vttMultiWhitespaces from './vttMultiWhitespaces';
 import vtt from './vtt';
 import vttWithoutIdentifier from './vttWithoutIdentifier';
 import vttWithMixedIdentifier from './vttWithMixedIdentifier';
+import vttWithMixedIdentifierStyleAndNote from './vttWithMixedIdentifierStyleAndNote';
 import vttWithNote from './vttWithNote';
 import vttWithMultilineNode from './vttWithMultilineNote';
 import vttWithStyle from './vttWithStyle';
@@ -17,18 +18,27 @@ import resultWithMixedId from './resultWithMixedId.json';
 
 describe('srt-vtt-parser', () => {
   it.each`
-    raw                       | expected             | note
-    ${srt}                    | ${result}            | ${'should parse simple srt file'}
-    ${srtMultiWhitespaces}    | ${result}            | ${'should parse srt file with multiple whitespaces'}
-    ${vtt}                    | ${result}            | ${'should parse simple vtt file'}
-    ${vttMultiWhitespaces}    | ${result}            | ${'should parse vtt file with multiple whitespaces'}
-    ${vttWithoutIdentifier}   | ${resultWithoutId}   | ${'should parse vtt file without identifier'}
-    ${vttWithMixedIdentifier} | ${resultWithMixedId} | ${'should parse vtt file with mixed identifier'}
-    ${vttWithNote}            | ${result}            | ${'should vtt file with note'}
-    ${vttWithMultilineNode}   | ${result}            | ${'should vtt file with multiline note'}
-    ${vttWithStyle}           | ${result}            | ${'should parse vtt file with style blocks'}
-    ${vttWithInlineStyle}     | ${result}            | ${'should parse vtt file with inline style'}
+    raw                                   | expected             | note
+    ${srt}                                | ${result}            | ${'should parse simple srt file'}
+    ${srtMultiWhitespaces}                | ${result}            | ${'should parse srt file with multiple whitespaces'}
+    ${vtt}                                | ${result}            | ${'should parse simple vtt file'}
+    ${vttMultiWhitespaces}                | ${result}            | ${'should parse vtt file with multiple whitespaces'}
+    ${vttWithoutIdentifier}               | ${resultWithoutId}   | ${'should parse vtt file without identifier'}
+    ${vttWithMixedIdentifier}             | ${resultWithMixedId} | ${'should parse vtt file with mixed identifier'}
+    ${vttWithNote}                        | ${resultWithoutId}   | ${'should vtt file with note'}
+    ${vttWithMultilineNode}               | ${resultWithoutId}   | ${'should vtt file with multiline note'}
+    ${vttWithStyle}                       | ${resultWithoutId}   | ${'should parse vtt file with style blocks'}
+    ${vttWithMixedIdentifierStyleAndNote} | ${resultWithMixedId} | ${'should parse vtt file with style blocks'}
+    ${vttWithInlineStyle}                 | ${resultWithoutId}   | ${'should parse vtt file with inline style'}
   `('$note', ({ raw, expected }) => {
+    const parsedResult = parse(raw);
+    expect(parsedResult).toEqual(expected);
+  });
+
+  it.each`
+    raw                   | expected           | note
+    ${vttWithInlineStyle} | ${resultWithoutId} | ${'should parse vtt file with inline style'}
+  `('x', ({ raw, expected }) => {
     const parsedResult = parse(raw);
     expect(parsedResult).toEqual(expected);
   });

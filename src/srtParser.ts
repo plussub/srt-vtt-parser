@@ -32,7 +32,7 @@ const timestampToMillisecond = (value: string) => {
   return parseInt(seconds.replace(',', ''), 10) + parseInt(minutes, 10) * 60 * 1000 + parseInt(hours, 10) * 60 * 60 * 1000;
 };
 
-const SrtMachine: Machine = {
+const SrtMachine: () => Machine = () =>({
   start(raw: string): Entry[] {
     let currentTransition: TransitionNames = TRANSITION_NAMES.ID;
     let params: TransitionParams = {
@@ -42,7 +42,7 @@ const SrtMachine: Machine = {
       current: {}
     };
     while (currentTransition !== TRANSITION_NAMES.FINISH) {
-      const result = SrtMachine[currentTransition](params);
+      const result = this[currentTransition](params);
       params = result.params;
       currentTransition = result.next;
     }
@@ -121,10 +121,10 @@ const SrtMachine: Machine = {
       params
     };
   }
-};
+});
 
 export const srtParser = (raw: string): ParsedResult => {
   return {
-    entries: SrtMachine.start(raw)
+    entries: SrtMachine().start(raw)
   };
 };
