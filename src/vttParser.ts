@@ -127,9 +127,6 @@ const VttMachine: () => Machine = () => ({
     if (tokens.length <= pos) {
       return { next: TRANSITION_NAMES.FINISH, params };
     }
-    if (isBlank(tokens[pos])) {
-      return { next: TRANSITION_NAMES.FIN_ENTRY, params };
-    }
     current.text = tokens[pos];
     return { next: TRANSITION_NAMES.MULTI_LINE_TEXT, params: { ...params, current, pos: pos + 1 } };
   },
