@@ -32,9 +32,12 @@ type Machine = Record<TransitionNames, (params: TransitionParams) => TransitionR
 };
 
 const timestampToMillisecond = (value: string) => {
-  const [hours, minutes, seconds] = value.split(':');
-  return parseInt(seconds.replace('.', ''), 10) + parseInt(minutes, 10) * 60 * 1000 + parseInt(hours, 10) * 60 * 60 * 1000;
+  let arr = value.split(':');
+  let hours, minutes, seconds ;
+  arr.length === 2 ? [minutes, seconds] = arr : [hours, minutes, seconds] = arr;
+  return parseInt(seconds.replace('.', ''), 10) + parseInt(minutes, 10) * 60 * 1000 + (hours ? parseInt(hours, 10) : 0) * 60 * 60 * 1000;
 };
+
 
 const VttMachine: () => Machine = () => ({
   start(raw: string): Entry[] {
