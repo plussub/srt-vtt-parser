@@ -1,6 +1,6 @@
 import { parse } from '@/index';
 import srt from './srt';
-import srtMultiWhitespaces from './srtMultiwhitespaces';
+import srtMultiWhitespaces from './srtMultiWhitespaces';
 import srtWithEmptyTextLines from './srtWithEmptyTextLines';
 import vttMultiWhitespaces from './vttMultiWhitespaces';
 import vttWithEmptyTextLines from './vttWithEmptyTextLines';
