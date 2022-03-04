@@ -1,5 +1,5 @@
 # SRT/VTT Parser
-A dependency free SRT/VTT subtitle parser, written in TypeScript.
+A dependency-free SRT/VTT subtitle parser, written in TypeScript.
 
 ## Installation
 
