@@ -1,5 +1,30 @@
 # SRT/VTT Parser
-A dependency free SRT / Vtt subtitle parser, written in Typescript.
+A dependency-free SRT/VTT subtitle parser, written in TypeScript.
+
+## Installation
+
+```
+npm i @plussub/srt-vtt-parser
+```
+
+## Usage
+
+```ts
+import fs from 'fs';
+import { parse } from '@plussub/srt-vtt-parser';
+
+const { entries } = parse(
+  fs
+    .readFileSync('transcript.vtt') // or '.srt'
+    .toString()
+);
+
+entries.forEach(({ from, to, text, id }) => {
+  // process transcript entry
+});
+```
+
+## Examples
 
 SRT (SubRip)
 ```
