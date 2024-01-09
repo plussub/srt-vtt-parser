@@ -136,10 +136,7 @@ const VttMachine: () => Machine = () => ({
 
   [TRANSITION_NAMES.MULTI_LINE_TEXT](params: TransitionParams): TransitionResult {
     const { tokens, pos, current } = params;
-    if (tokens.length <= pos) {
-      return { next: TRANSITION_NAMES.FINISH, params };
-    }
-    if (isBlank(tokens[pos])) {
+    if (tokens.length <= pos || isBlank(tokens[pos])) {
       return { next: TRANSITION_NAMES.FIN_ENTRY, params };
     }
     current.text = `${current.text}\n${tokens[pos]}`;

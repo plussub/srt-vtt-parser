@@ -2,8 +2,10 @@ import { parse } from '@/index';
 import srt from './srt';
 import srtMultiWhitespaces from './srtMultiWhitespaces';
 import srtWithEmptyTextLines from './srtWithEmptyTextLines';
+import srtWithMissingNewLineInLastLine from './srtWithMissingNewLineInLastLine';
 import vttMultiWhitespaces from './vttMultiWhitespaces';
 import vttWithEmptyTextLines from './vttWithEmptyTextLines';
+import vttWithMissingNewLineInLastLine from './vttWithMissingNewLineInLastLine';
 import vtt from './vtt';
 import vttWithoutIdentifier from './vttWithoutIdentifier';
 import vttWithMixedIdentifier from './vttWithMixedIdentifier';
@@ -25,8 +27,10 @@ describe('srt-vtt-parser', () => {
     ${srt}                                | ${result}                   | ${'should parse simple srt file'}
     ${srtMultiWhitespaces}                | ${result}                   | ${'should parse srt file with multiple whitespaces'}
     ${srtWithEmptyTextLines}              | ${resultWithEmptyTextLines} | ${'should parse srt file with empty text lines'}
+    ${srtWithMissingNewLineInLastLine}    | ${result}                   | ${'should parse srt even the last line does not have a new line'}
     ${vtt}                                | ${result}                   | ${'should parse simple vtt file'}
     ${vttMultiWhitespaces}                | ${result}                   | ${'should parse vtt file with multiple whitespaces'}
+    ${vttWithMissingNewLineInLastLine}    | ${result}                   | ${'should parse vtt file even the last line does not have a new line'}
     ${vttWithEmptyTextLines}              | ${resultWithEmptyTextLines} | ${'should parse vtt file with empty text lines'}
     ${vttWithoutIdentifier}               | ${resultWithoutId}          | ${'should parse vtt file without identifier'}
     ${vttWithMixedIdentifier}             | ${resultWithMixedId}        | ${'should parse vtt file with mixed identifier'}
