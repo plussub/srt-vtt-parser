@@ -7,6 +7,7 @@ import vttMultiWhitespaces from './vttMultiWhitespaces';
 import vttWithEmptyTextLines from './vttWithEmptyTextLines';
 import vttWithMissingNewLineInLastLine from './vttWithMissingNewLineInLastLine';
 import vtt from './vtt';
+import vttDirectTimestamp from './vttDirectTimestamp';
 import vttWithLegacyMetaHeader from './vttWithLegacyMetaHeader';
 import vttWithRegionHeader from './vttWithRegion';
 import vttWithoutIdentifier from './vttWithoutIdentifier';
@@ -33,6 +34,7 @@ describe('srt-vtt-parser', () => {
     ${vtt}                                | ${result}                   | ${'should parse simple vtt file'}
     ${vttMultiWhitespaces}                | ${result}                   | ${'should parse vtt file with multiple whitespaces'}
     ${vttWithMissingNewLineInLastLine}    | ${result}                   | ${'should parse vtt file even the last line does not have a new line'}
+    ${vttDirectTimestamp}                 | ${resultWithoutId}          | ${'should parse vtt file with direct time stamp'}
     ${vttWithEmptyTextLines}              | ${resultWithEmptyTextLines} | ${'should parse vtt file with empty text lines'}
     ${vttWithoutIdentifier}               | ${resultWithoutId}          | ${'should parse vtt file without identifier'}
     ${vttWithMixedIdentifier}             | ${resultWithMixedId}        | ${'should parse vtt file with mixed identifier'}
@@ -49,10 +51,10 @@ describe('srt-vtt-parser', () => {
   });
 
   it('parse whole srt file', () => {
-   // console.warn(parse(driveSrt));
+     console.warn(parse(driveSrt));
   });
 
   it('parse whole vtt file', async () => {
-   // console.warn(await parse(pulpfictionVtt));
+    console.warn(await parse(pulpfictionVtt));
   });
 });

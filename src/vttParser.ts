@@ -67,7 +67,7 @@ const VttMachine: () => Machine = () => ({
     const { tokens, pos } = params;
     if (tokens.length <= pos) {
       return { next: TRANSITION_NAMES.FINISH, params };
-    } else if(tokens[pos].includes(":")){
+    } else if(tokens[pos].includes(":") && !tokens[pos].includes("-->") ){
       return { next: TRANSITION_NAMES.LEGACY_HEADER, params: { ...params, pos: pos + 1 } };
     } else {
       return { next: TRANSITION_NAMES.ID_OR_NOTE_OR_STYLE_OR_REGION, params };
