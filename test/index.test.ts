@@ -7,8 +7,8 @@ import vttMultiWhitespaces from './vttMultiWhitespaces';
 import vttWithEmptyTextLines from './vttWithEmptyTextLines';
 import vttWithMissingNewLineInLastLine from './vttWithMissingNewLineInLastLine';
 import vtt from './vtt';
-import vttWithLegacyMetaHeader from './vttLegacyMetaHeader';
-import vttWithRegionHeader from './vttRegionHeader';
+import vttWithLegacyMetaHeader from './vttWithLegacyMetaHeader';
+import vttWithRegionHeader from './vttWithRegion';
 import vttWithoutIdentifier from './vttWithoutIdentifier';
 import vttWithMixedIdentifier from './vttWithMixedIdentifier';
 import vttWithMixedIdentifierStyleAndNote from './vttWithMixedIdentifierStyleAndNote';
@@ -49,10 +49,10 @@ describe('srt-vtt-parser', () => {
   });
 
   it('parse whole srt file', () => {
-    console.warn(parse(driveSrt));
+   // console.warn(parse(driveSrt));
   });
 
   it('parse whole vtt file', async () => {
-    console.warn(await parse(pulpfictionVtt));
+   // console.warn(await parse(pulpfictionVtt));
   });
 });

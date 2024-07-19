@@ -1,4 +1,5 @@
 export default `WEBVTT
+
 1
 00:01:42.821 --> 00:01:44.289
 (SIREN WAILING IN DISTANCE)

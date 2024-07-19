@@ -1,5 +1,7 @@
 export default `WEBVTT
-Region: id=r1 width=60% lines=4 viewportanchor=50%,90% regionanchor=50%,100% scroll=up
+REGION
+id:Example
+color:rgba(255,0,0,1)
 
 1
 00:01:42.821 --> 00:01:44.289
