@@ -1,4 +1,5 @@
 export default `WEBVTT
+X-TIMESTAMP-MAP=MPEGTS:808300262,LOCAL:00:00:00.000
 
 1
 00:01:42.821 --> 00:01:44.289
@@ -6,14 +7,10 @@ export default `WEBVTT
 multiline test
 
 2
-00:01:44.289 --> 00:01:44.500
-
-
-3
 00:01:45.365 --> 00:01:48.084
 <i>DRIVER: There's 100,000 streets in this city.</i>
 
-4
+3
 00:01:49.077 --> 00:01:51.421
 You don't need to know the route.
 `

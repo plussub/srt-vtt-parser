@@ -7,6 +7,8 @@ import vttMultiWhitespaces from './vttMultiWhitespaces';
 import vttWithEmptyTextLines from './vttWithEmptyTextLines';
 import vttWithMissingNewLineInLastLine from './vttWithMissingNewLineInLastLine';
 import vtt from './vtt';
+import vttWithLegacyMetaHeader from './vttWithLegacyMetaHeader';
+import vttWithRegionHeader from './vttWithRegion';
 import vttWithoutIdentifier from './vttWithoutIdentifier';
 import vttWithMixedIdentifier from './vttWithMixedIdentifier';
 import vttWithMixedIdentifierStyleAndNote from './vttWithMixedIdentifierStyleAndNote';
@@ -39,16 +41,18 @@ describe('srt-vtt-parser', () => {
     ${vttWithStyle}                       | ${resultWithoutId}          | ${'should parse vtt file with style blocks'}
     ${vttWithMixedIdentifierStyleAndNote} | ${resultWithMixedId}        | ${'should parse vtt file with style blocks'}
     ${vttWithInlineStyle}                 | ${resultWithoutId}          | ${'should parse vtt file with inline style'}
-  `('$note', ({ raw, expected }) => {
+    ${vttWithLegacyMetaHeader}            | ${result}                   | ${'should parse vtt file but ignore legacy meta header'}
+    ${vttWithRegionHeader}                | ${result}                   | ${'should parse vtt file but ignore region header'}
+    `('$note', ({ raw, expected }) => {
     const parsedResult = parse(raw);
     expect(parsedResult).toEqual(expected);
   });
 
   it('parse whole srt file', () => {
-    console.warn(parse(driveSrt));
+   // console.warn(parse(driveSrt));
   });
 
   it('parse whole vtt file', async () => {
-    console.warn(await parse(pulpfictionVtt));
+   // console.warn(await parse(pulpfictionVtt));
   });
 });

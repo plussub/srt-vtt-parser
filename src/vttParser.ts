@@ -5,9 +5,11 @@ const TRANSITION_NAMES = {
   HEADER: 'HEADER',
   ID: 'ID',
   TIME_LINE: 'TIME_LINE',
-  ID_OR_NOTE_OR_STYLE: 'ID_OR_NOTE_OR_STYLE',
+  ID_OR_NOTE_OR_STYLE_OR_REGION: 'ID_OR_NOTE_OR_STYLE_OR_REGION',
   STYLE: 'STYLE',
   NOTE: 'NOTE',
+  REGION: 'REGION',
+  LEGACY_HEADER: 'LEGACY_HEADER',
   TEXT: 'TEXT',
   MULTI_LINE_TEXT: 'MULTI_LINE_TEXT',
   FIN_ENTRY: 'FIN_ENTRY',
@@ -58,20 +60,34 @@ const VttMachine: () => Machine = () => ({
   },
 
   [TRANSITION_NAMES.HEADER](params: TransitionParams): TransitionResult {
-    return { next: TRANSITION_NAMES.ID_OR_NOTE_OR_STYLE, params: { ...params, pos: params.pos + 1 } };
+    return { next: TRANSITION_NAMES.LEGACY_HEADER, params: { ...params, pos: params.pos + 1 } };
   },
 
-  [TRANSITION_NAMES.ID_OR_NOTE_OR_STYLE](params: TransitionParams): TransitionResult {
+  [TRANSITION_NAMES.LEGACY_HEADER](params: TransitionParams): TransitionResult {
+    const { tokens, pos } = params;
+    if (tokens.length <= pos) {
+      return { next: TRANSITION_NAMES.FINISH, params };
+    } else if(tokens[pos].includes(":")){
+      return { next: TRANSITION_NAMES.LEGACY_HEADER, params: { ...params, pos: pos + 1 } };
+    } else {
+      return { next: TRANSITION_NAMES.ID_OR_NOTE_OR_STYLE_OR_REGION, params };
+    } 
+  },
+
+
+  [TRANSITION_NAMES.ID_OR_NOTE_OR_STYLE_OR_REGION](params: TransitionParams): TransitionResult {
     const { tokens, pos } = params;
 
     if (tokens.length <= pos) {
       return { next: TRANSITION_NAMES.FINISH, params };
     } else if (isBlank(tokens[pos])) {
-      return { next: TRANSITION_NAMES.ID_OR_NOTE_OR_STYLE, params: { ...params, pos: pos + 1 } };
+      return { next: TRANSITION_NAMES.ID_OR_NOTE_OR_STYLE_OR_REGION, params: { ...params, pos: pos + 1 } };
     } else if (tokens[pos].toUpperCase().includes('NOTE')) {
       return { next: TRANSITION_NAMES.NOTE, params };
     } else if (tokens[pos].toUpperCase().includes('STYLE')) {
       return { next: TRANSITION_NAMES.STYLE, params };
+    } else if (tokens[pos].toUpperCase().includes('REGION')) {
+      return { next: TRANSITION_NAMES.REGION, params };
     } else {
       return { next: TRANSITION_NAMES.ID, params };
     }
@@ -80,7 +96,7 @@ const VttMachine: () => Machine = () => ({
   [TRANSITION_NAMES.STYLE](params: TransitionParams): TransitionResult {
     const { tokens, pos } = params;
     if (isBlank(tokens[pos])) {
-      return { next: TRANSITION_NAMES.ID_OR_NOTE_OR_STYLE, params: { ...params, pos: pos + 1 } };
+      return { next: TRANSITION_NAMES.ID_OR_NOTE_OR_STYLE_OR_REGION, params: { ...params, pos: pos + 1 } };
     }
     return { next: TRANSITION_NAMES.STYLE, params: { ...params, pos: pos + 1 } };
   },
@@ -88,10 +104,19 @@ const VttMachine: () => Machine = () => ({
   [TRANSITION_NAMES.NOTE](params: TransitionParams): TransitionResult {
     const { tokens, pos } = params;
     if (isBlank(tokens[pos])) {
-      return { next: TRANSITION_NAMES.ID_OR_NOTE_OR_STYLE, params: { ...params, pos: pos + 1 } };
+      return { next: TRANSITION_NAMES.ID_OR_NOTE_OR_STYLE_OR_REGION, params: { ...params, pos: pos + 1 } };
     }
     return { next: TRANSITION_NAMES.STYLE, params: { ...params, pos: pos + 1 } };
   },
+
+  [TRANSITION_NAMES.REGION](params: TransitionParams): TransitionResult {
+    const { tokens, pos } = params;
+    if (isBlank(tokens[pos])) {
+      return { next: TRANSITION_NAMES.ID_OR_NOTE_OR_STYLE_OR_REGION, params: { ...params, pos: pos + 1 } };
+    }
+    return { next: TRANSITION_NAMES.REGION, params: { ...params, pos: pos + 1 } };
+  },
+
 
   [TRANSITION_NAMES.ID](params: TransitionParams): TransitionResult {
     const { tokens, pos, current } = params;
@@ -150,7 +175,7 @@ const VttMachine: () => Machine = () => ({
     } else {
       throw new Error(`Parsing error current not complete ${JSON.stringify(current)}`);
     }
-    return { next: TRANSITION_NAMES.ID_OR_NOTE_OR_STYLE, params: { ...params, current: {}, pos: pos + 1 } };
+    return { next: TRANSITION_NAMES.ID_OR_NOTE_OR_STYLE_OR_REGION, params: { ...params, current: {}, pos: pos + 1 } };
   },
 
   [TRANSITION_NAMES.FINISH](params: TransitionParams): TransitionResult {
