@@ -7,7 +7,8 @@ import vttMultiWhitespaces from './vttMultiWhitespaces';
 import vttWithEmptyTextLines from './vttWithEmptyTextLines';
 import vttWithMissingNewLineInLastLine from './vttWithMissingNewLineInLastLine';
 import vtt from './vtt';
-import vttWithMetaHeader from './vttMetaHeader';
+import vttWithLegacyMetaHeader from './vttLegacyMetaHeader';
+import vttWithRegionHeader from './vttRegionHeader';
 import vttWithoutIdentifier from './vttWithoutIdentifier';
 import vttWithMixedIdentifier from './vttWithMixedIdentifier';
 import vttWithMixedIdentifierStyleAndNote from './vttWithMixedIdentifierStyleAndNote';
@@ -40,8 +41,9 @@ describe('srt-vtt-parser', () => {
     ${vttWithStyle}                       | ${resultWithoutId}          | ${'should parse vtt file with style blocks'}
     ${vttWithMixedIdentifierStyleAndNote} | ${resultWithMixedId}        | ${'should parse vtt file with style blocks'}
     ${vttWithInlineStyle}                 | ${resultWithoutId}          | ${'should parse vtt file with inline style'}
-    ${vttWithMetaHeader}                  | ${result}                   | ${'should parse vtt file but ignore meta header'}
-  `('$note', ({ raw, expected }) => {
+    ${vttWithLegacyMetaHeader}            | ${result}                   | ${'should parse vtt file but ignore legacy meta header'}
+    ${vttWithRegionHeader}                | ${result}                   | ${'should parse vtt file but ignore region header'}
+    `('$note', ({ raw, expected }) => {
     const parsedResult = parse(raw);
     expect(parsedResult).toEqual(expected);
   });
