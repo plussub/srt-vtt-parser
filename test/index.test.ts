@@ -7,6 +7,7 @@ import vttMultiWhitespaces from './vttMultiWhitespaces';
 import vttWithEmptyTextLines from './vttWithEmptyTextLines';
 import vttWithMissingNewLineInLastLine from './vttWithMissingNewLineInLastLine';
 import vtt from './vtt';
+import vttWithMetaHheader from './vttMetaHeader';
 import vttWithoutIdentifier from './vttWithoutIdentifier';
 import vttWithMixedIdentifier from './vttWithMixedIdentifier';
 import vttWithMixedIdentifierStyleAndNote from './vttWithMixedIdentifierStyleAndNote';
@@ -39,6 +40,7 @@ describe('srt-vtt-parser', () => {
     ${vttWithStyle}                       | ${resultWithoutId}          | ${'should parse vtt file with style blocks'}
     ${vttWithMixedIdentifierStyleAndNote} | ${resultWithMixedId}        | ${'should parse vtt file with style blocks'}
     ${vttWithInlineStyle}                 | ${resultWithoutId}          | ${'should parse vtt file with inline style'}
+    ${vttWithMetaHheader}                 | ${result}                   | ${'should parse vtt file but ignore meta header'}
   `('$note', ({ raw, expected }) => {
     const parsedResult = parse(raw);
     expect(parsedResult).toEqual(expected);
