@@ -16,7 +16,7 @@
   "types": "dist/src/index.d.ts",
   "scripts": {
     "clean": "rimraf dist/*",
-    "build": "tsc",
+    "build": "vite build",
     "ts-check": "tsc --noEmit --skipLibCheck",
     "test": "vitest run",
     "publish-patch": "npm run clean && npm run build && npm version patch && git push && git push --tags && npm publish --access public"
