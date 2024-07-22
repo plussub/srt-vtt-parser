@@ -10,6 +10,7 @@
     "captions",
     "parser"
   ],
+  "type": "module",
   "main": "dist/src/index.js",
   "module": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -17,7 +18,7 @@
     "clean": "rimraf dist/*",
     "build": "tsc",
     "ts-check": "tsc --noEmit --skipLibCheck",
-    "test": "jest",
+    "test": "vitest run",
     "publish-patch": "npm run clean && npm run build && npm version patch && git push && git push --tags && npm publish --access public"
   },
   "repository": {
@@ -34,12 +35,12 @@
     "plussub:registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.12",
-    "jest": "^29.7.0",
     "prettier": "^3.3.3",
     "rimraf": "^6.0.1",
-    "ts-jest": "^29.2.3",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "vite": "^5.3.4",
+    "vite-plugin-dts": "^3.9.1",
+    "vitest": "^2.0.3"
   },
   "files": [
     "dist/**/*"
