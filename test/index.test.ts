@@ -1,4 +1,5 @@
-import { parse } from '@/index';
+import { parse } from '../src/index.ts';
+import { describe, it, expect } from 'vitest';
 import srt from './srt';
 import srtMultiWhitespaces from './srtMultiWhitespaces';
 import srtWithEmptyTextLines from './srtWithEmptyTextLines';
